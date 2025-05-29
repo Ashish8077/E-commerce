@@ -1,7 +1,9 @@
 import React from "react";
 import { Trash } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
+  const navigate = useNavigate();
   return (
     <div className="w-full px-2 sm:px-4 md:px-6 py-6 max-w-6xl mx-auto">
       <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 md:p-8">
@@ -66,7 +68,9 @@ const CartPage = () => {
               <span>$80.00</span>
             </div>
           </div>
-          <button className="mt-6 w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition duration-200">
+          <button
+            className="mt-6 w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition duration-200"
+            onClick={() => navigate("/checkout")}>
             Proceed to Checkout
           </button>
         </div>

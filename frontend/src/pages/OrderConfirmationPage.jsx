@@ -1,6 +1,6 @@
 import React from "react";
-import { Check } from "lucide-react";
-
+import { Check} from "lucide-react";
+import { Link } from "react-router-dom";
 const OrderConfirmationPage = () => {
   return (
     <div className="w-full px-2 sm:px-4 md:px-6 py-6 max-w-3xl mx-auto">
@@ -77,9 +77,11 @@ const OrderConfirmationPage = () => {
 
         {/* Continue Shopping */}
         <div className="mt-10">
-          <button className="w-full sm:w-auto bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700 transition cursor-pointer">
+          <Link
+            to="/"
+            className="w-full sm:w-auto bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700 transition cursor-pointer">
             Continue Shopping
-          </button>
+          </Link>
         </div>
       </div>
     </div>

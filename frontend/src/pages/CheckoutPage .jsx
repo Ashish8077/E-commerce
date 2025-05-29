@@ -1,9 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const inputStyle =
   "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 outline-indigo-500";
 
 const CheckoutPage = () => {
+  const navigate = useNavigate();
+  const handlePlaceOrder = () => {
+    navigate("/order-confirmation");
+  };
   return (
     <div className="w-full px-2 sm:px-4 md:px-6 py-6 max-w-5xl mx-auto">
       <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 md:p-8">
@@ -107,7 +112,9 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            <button className="mt-6 w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 transition">
+            <button
+              className="mt-6 w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 transition cursor-pointer"
+              onClick={handlePlaceOrder}>
               Place Order
             </button>
           </div>

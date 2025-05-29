@@ -1,5 +1,8 @@
 import React from "react";
 import { ChevronRight } from "lucide-react";
+import { useParams, Link } from "react-router-dom";
+import { categoriesData } from "../data/categoriesData";
+import { name } from "ejs";
 
 const electronicsData = {
   Smartphones: [
@@ -59,27 +62,32 @@ const electronicsData = {
   ],
 };
 
-const ElectronicsCategoryPage = () => {
+const CategoryPage = () => {
+  const { categoryName } = useParams();
+  console.log(categoryName);
+  const decodedCategory = decodeURIComponent(categoryName);
+  const subcategories = categoriesData[decodedCategory];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Page Header */}
       <header className="bg-gradient-to-r from-purple-600 via-indigo-700 to-blue-600 text-white py-16 text-center">
-        <h1 className="text-4xl font-extrabold">Electronics</h1>
+        <h1 className="text-4xl font-extrabold">{decodedCategory}</h1>
         <p className="mt-2 text-indigo-100 text-lg">
-          Explore top electronics – smartphones, headphones, tablets & more.
+          Explore top {categoryName.toLowerCase()} products .
         </p>
       </header>
 
       {/* Subcategories and Products */}
       <main className="max-w-7xl mx-auto px-6 lg:px-20 py-16 space-y-16 ">
-        {Object.entries(electronicsData).map(([category, items]) => (
+        {Object.entries(subcategories).map(([category, items]) => (
           <section key={category} className="">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b border-indigo-200 pb-2 ">
               {category}
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {items.map(({ id, name, price, image }) => (
+              {items.slice(0, 3).map(({ id, name, price, image }) => (
                 <div
                   key={id}
                   className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
@@ -93,7 +101,7 @@ const ElectronicsCategoryPage = () => {
                       {name}
                     </h3>
                     <p className="mt-2 text-indigo-600 font-bold text-lg">
-                      {price}
+                      ₹{price}
                     </p>
                     <button className="mt-4 w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition duration-300">
                       Add to Cart
@@ -103,11 +111,11 @@ const ElectronicsCategoryPage = () => {
               ))}
             </div>
             <div className="flex justify-center mt-10">
-              <button
-                href="/your-target-link"
+              <Link
+                to={`/category/${categoryName}/${category}`}
                 className="inline-flex items-center bg-white border-indigo-600 text-indigo-600 justify-center gap-2   px-6 py-2 rounded-md font-medium transition duration-300 shadow-md cursor-pointer  hover:bg-indigo-50">
                 View All {category} <ChevronRight />
-              </button>
+              </Link>
             </div>
           </section>
         ))}
@@ -116,4 +124,4 @@ const ElectronicsCategoryPage = () => {
   );
 };
 
-export default ElectronicsCategoryPage;
+export default CategoryPage;

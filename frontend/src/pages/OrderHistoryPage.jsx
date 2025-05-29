@@ -25,7 +25,7 @@ const OrderHistoryPage = () => {
         {orders.map((order) => (
           <div
             key={order.id}
-            className="p-4 sm:p-6 bg-white border rounded-lg shadow-sm flex flex-col sm:flex-row sm:justify-between gap-4">
+            className="p-4 sm:p-6 bg-white  rounded-lg shadow-sm flex flex-col sm:flex-row sm:justify-between gap-4">
             <div>
               <p className="font-semibold">Order #{order.id}</p>
               <p className="text-gray-500 text-sm">Placed on {order.date}</p>
