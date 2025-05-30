@@ -5,6 +5,7 @@ import {
   featuredProducts,
   categoriesData,
 } from "../data/categoriesData";
+import { Button } from "../components";
 
 const HomePage = () => {
   useEffect(() => {

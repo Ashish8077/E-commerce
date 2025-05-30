@@ -153,12 +153,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-{
-  /* <div
-  className={`${
-    menuOpen ? "flex" : "hidden"
-  } flex-col absolute top-16 w-full bg-white text-gray-800 shadow-md z-50
-     lg:flex lg:static lg:w-auto lg:bg-transparent lg:shadow-none lg:flex-row lg:items-center lg:space-x-8 text-sm font-medium`}
-></div> */
-}
