@@ -17,7 +17,7 @@ const Navbar = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const location = useLocation();
 
-  const user = false;
+  const user = true;
   const isAdmin = false;
 
   const handleNav = (e, hash) => {
