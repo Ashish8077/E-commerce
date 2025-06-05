@@ -12,11 +12,12 @@ import {
   signupRateLimiter,
 } from "../middleware/rateLimiter.middleware.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
+import { normalizeEmail } from "../middleware/normalizeEmail.middleware.js";
 
 const router = express.Router();
 
-router.post("/signup", validate(signupSchema), signup);
-router.post("/login", validate(loginSchema), login);
+router.post("/signup", validate(signupSchema), normalizeEmail, signup);
+router.post("/login", validate(loginSchema), normalizeEmail, login);
 router.post("/logout", logout);
 router.get("/profile", protectRoute, getProfile);
 

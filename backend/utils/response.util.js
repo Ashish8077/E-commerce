@@ -5,9 +5,8 @@ export const sendResponse = (res, code, { success, message, error, data }) => {
     ...(data && { data }),
     ...(error && { error }),
   };
+  console.log(responseBody);
   return res.status(code).json(responseBody);
 };
 
-
-
-// message !== undefined 
+// message !== undefined

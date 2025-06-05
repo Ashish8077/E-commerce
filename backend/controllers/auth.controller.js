@@ -7,13 +7,12 @@ import {
   logoutUser,
 } from "../services/auth.service.js";
 import { sendResponse } from "../utils/response.util.js";
-import { redis } from "../lib/redis.js";
 
 export const signup = async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
     const user = await checkExistingUser(email);
-    if (user)
+    if (user && user.email === email)
       return sendResponse(res, 400, {
         success: false,
         error: "Email is already in use",

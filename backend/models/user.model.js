@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import { toJSONPlugin } from "../utils/toJSON.plugin.util.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -44,21 +45,7 @@ userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-userSchema.virtual("id").get(function () {
-  return this._id.toHexString();
-});
-
-userSchema.set("toJSON", {
-  virtuals: true,
-  versionKey: false,
-  transform: (doc, ret) => {
-    delete ret._id;
-    delete ret.password;
-    delete ret.createdAt;
-    delete ret.updatedAt;
-    return ret;
-  },
-});
+userSchema.plugin(toJSONPlugin);
 
 const User = mongoose.model("User", userSchema);
 

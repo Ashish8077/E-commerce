@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { signupSchema } from "../Schema/authSchema";
+import useUserStore from "../store/authStore";
 
 const Signup = () => {
   const {
@@ -13,9 +14,14 @@ const Signup = () => {
     reset,
   } = useForm({ resolver: yupResolver(signupSchema) });
 
-  const handleSignup = (data) => {
-    console.log(data);
-    reset();
+  const { signup, auth } = useUserStore();
+  const emailError = auth.emailError;
+
+  const handleSignup = async (data) => {
+    const { success } = await signup(data);
+    if (success) {
+      reset();
+    }
   };
   return (
     <FormContainer
@@ -37,7 +43,7 @@ const Signup = () => {
           placeholder="you@example.com"
           name="email"
           {...register("email")}
-          error={errors.email?.message}
+          error={emailError ? emailError : errors.email?.message}
         />
 
         <Input

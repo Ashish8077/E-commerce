@@ -10,15 +10,18 @@ import {
   KeyRound,
   BookCheck,
   CircleUserRound,
+  LogOut,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import useUserStore from "../store/authStore";
 
 const Navbar = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const location = useLocation();
 
-  const user = true;
-  const isAdmin = false;
+  const { user, logout } = useUserStore();
+
+  const isAdmin = user?.role === "admin";
 
   const handleNav = (e, hash) => {
     if (location.pathname === "/") {
@@ -37,11 +40,16 @@ const Navbar = () => {
     setOpenMenu(false);
   };
 
+  const handleLogout = async () => {
+    await logout();
+  };
+
   useEffect(() => {
     setOpenMenu(false);
   }, [location]);
+
   return (
-    <nav className="bg-gradient-to-r from-purple-600 via-indigo-700 to-blue-600 text-white sticky top-0 left-0">
+    <nav className="bg-gradient-to-r from-purple-600 via-indigo-700 to-blue-600 text-white sticky top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto px-6 lg:px-20 py-4 flex justify-between items-center">
         {/* Logo */}
         <Link
@@ -101,6 +109,13 @@ const Navbar = () => {
               className="hover:text-indigo-600 lg:hover:text-indigo-100 transition text-lg lg:hidden flex gap-2   items-center">
               {openMenu && <CircleUserRound />} Profile
             </Link>
+            {user && (
+              <button
+                className="hover:text-indigo-600 lg:hover:text-indigo-100 transition text-lg lg:hidden flex gap-2   items-center"
+                onClick={handleLogout}>
+                <LogOut /> Logout
+              </button>
+            )}
           </div>
         )}
 
@@ -128,7 +143,9 @@ const Navbar = () => {
                   </Link>
                 </>
               )}
-              <button className="bg-white text-indigo-700 font-semibold px-4 py-1.5 rounded-md hover:bg-indigo-100 transition text-sm cursor-pointer hidden lg:block">
+              <button
+                className="bg-white text-indigo-700 font-semibold px-4 py-1.5 rounded-md hover:bg-indigo-100 transition text-sm cursor-pointer hidden lg:block"
+                onClick={handleLogout}>
                 Logout
               </button>
             </>

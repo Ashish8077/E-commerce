@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import React from "react";
+import useUserStore from "../store/authStore";
 
 const NotFoundPage = () => {
+  const { user } = useUserStore();
+
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-r  text-white px-4 bg-gray-50">
       <h1 className="text-9xl text-black font-extrabold tracking-widest ">
@@ -13,9 +16,9 @@ const NotFoundPage = () => {
         Sorry, the page you are looking for does not exist or has been moved.
       </p>
       <a
-        href="/"
+        href={user?.role === "admin" ? "/secret-dashboard" : "/"}
         className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded transition">
-        Go Home
+        {user?.role === "admin" ? "Go Back To Dashboard" : "Go Home"}
       </a>
     </div>
   );
