@@ -22,6 +22,7 @@ const Navbar = () => {
   const { user, logout } = useUserStore();
 
   const isAdmin = user?.role === "admin";
+  const customer = user && user?.role === "customer";
 
   const handleNav = (e, hash) => {
     if (location.pathname === "/") {
@@ -104,11 +105,14 @@ const Navbar = () => {
               className="hover:text-indigo-600 lg:hover:text-indigo-100 transition text-lg lg:hidden flex gap-2   items-center">
               {openMenu && <BookCheck />} Signup
             </Link>
-            <Link
-              to="/profile"
-              className="hover:text-indigo-600 lg:hover:text-indigo-100 transition text-lg lg:hidden flex gap-2   items-center">
-              {openMenu && <CircleUserRound />} Profile
-            </Link>
+
+            {customer && (
+              <Link
+                to="/profile"
+                className="hover:text-indigo-600 lg:hover:text-indigo-100 transition text-lg lg:hidden flex gap-2   items-center">
+                {openMenu && <CircleUserRound />} Profile
+              </Link>
+            )}
             {user && (
               <button
                 className="hover:text-indigo-600 lg:hover:text-indigo-100 transition text-lg lg:hidden flex gap-2   items-center"
@@ -120,50 +124,58 @@ const Navbar = () => {
         )}
 
         {/* Actions */}
-        <div className="flex items-center flex-row-reverse lg:flex-row   gap-2 min-[320px]:space-x-4">
+        {!isAdmin ? (
+          <div className="flex items-center flex-row-reverse lg:flex-row   gap-2 min-[320px]:space-x-4">
+            <button
+              className="cursor-pointer lg:hidden"
+              onClick={() => setOpenMenu((prev) => !prev)}>
+              {openMenu ? <X /> : <Menu />}
+            </button>
+            {user ? (
+              <>
+                {!isAdmin && (
+                  <>
+                    <Link
+                      to={"/cart"}
+                      className="relative cursor-pointer lg:text-xl">
+                      <ShoppingCart className="w-6 h-6" />
+                      <span className="absolute -top-2 -right-2 bg-white text-indigo-700 text-xs rounded-full px-1.5 py-0.5 font-bold">
+                        2
+                      </span>
+                    </Link>
+                    <Link to="/profile">
+                      <CircleUserRound className="w-6 h-6 hidden lg:block" />
+                    </Link>
+                  </>
+                )}
+                <button
+                  className="bg-white text-indigo-700 font-semibold px-4 py-1.5 rounded-md hover:bg-indigo-100 transition text-sm cursor-pointer hidden lg:block"
+                  onClick={handleLogout}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <button className="bg-white text-indigo-700 font-semibold px-4 py-1.5 rounded-md hover:bg-indigo-100 transition text-sm cursor-pointer hidden lg:block">
+                    Login
+                  </button>
+                </Link>
+                <Link to="/signup">
+                  <button className="bg-white text-indigo-700 font-semibold px-4 py-1.5 rounded-md hover:bg-indigo-100 transition text-sm cursor-pointer hidden lg:block ">
+                    Signup
+                  </button>
+                </Link>
+              </>
+            )}
+          </div>
+        ) : (
           <button
-            className="cursor-pointer lg:hidden"
-            onClick={() => setOpenMenu((prev) => !prev)}>
-            {openMenu ? <X /> : <Menu />}
+            className="hover:text-indigo-600 lg:hover:text-indigo-100 transition text-lg  flex gap-1   items-center cursor-pointer bg-red-500 px-2 py-1 rounded-sm font-medium"
+            onClick={handleLogout}>
+            <LogOut /> Logout
           </button>
-          {user ? (
-            <>
-              {!isAdmin && (
-                <>
-                  <Link
-                    to={"/cart"}
-                    className="relative cursor-pointer lg:text-xl">
-                    <ShoppingCart className="w-6 h-6" />
-                    <span className="absolute -top-2 -right-2 bg-white text-indigo-700 text-xs rounded-full px-1.5 py-0.5 font-bold">
-                      2
-                    </span>
-                  </Link>
-                  <Link to="/profile">
-                    <CircleUserRound className="w-6 h-6 hidden lg:block" />
-                  </Link>
-                </>
-              )}
-              <button
-                className="bg-white text-indigo-700 font-semibold px-4 py-1.5 rounded-md hover:bg-indigo-100 transition text-sm cursor-pointer hidden lg:block"
-                onClick={handleLogout}>
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/login">
-                <button className="bg-white text-indigo-700 font-semibold px-4 py-1.5 rounded-md hover:bg-indigo-100 transition text-sm cursor-pointer hidden lg:block">
-                  Login
-                </button>
-              </Link>
-              <Link to="/signup">
-                <button className="bg-white text-indigo-700 font-semibold px-4 py-1.5 rounded-md hover:bg-indigo-100 transition text-sm cursor-pointer hidden lg:block ">
-                  Signup
-                </button>
-              </Link>
-            </>
-          )}
-        </div>
+        )}
       </div>
     </nav>
   );

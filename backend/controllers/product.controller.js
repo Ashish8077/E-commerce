@@ -51,6 +51,18 @@ export const updateProduct = async (req, res) => {
 };
 
 export const deleteProduct = async (req, res) => {
-  const { id: productId } = req.body;
-  await Product.findByIdAndDelete(productId);
+  try {
+    const { id: productId } = req.params;
+    await Product.findByIdAndDelete(productId);
+    return sendResponse(res, 200, {
+      success: true,
+      message: "Product Deleted Successfully",
+    });
+  } catch (error) {
+    console.error(`Error in deleteProudct controller ${error.message}`);
+    return sendResponse(res, 500, {
+      success: false,
+      error: "Internal server error",
+    });
+  }
 };

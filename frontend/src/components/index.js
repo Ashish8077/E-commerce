@@ -6,9 +6,9 @@ import Input from "./Input";
 import Button from "./Button";
 import FormContainer from "./FormContainer";
 import Sidebar from "../admin/components/Sidebar";
-import AdminHeader from "../admin/components/AdminHeader";
 import Select from "./Select";
 import LoadingSpinner from "./LoadingSpinner";
+import ToasterProvider from "./ToastProvider";
 
 export {
   NavBar,
@@ -19,7 +19,7 @@ export {
   Button,
   FormContainer,
   Sidebar,
-  AdminHeader,
   Select,
-  LoadingSpinner
+  LoadingSpinner,
+  ToasterProvider,
 };

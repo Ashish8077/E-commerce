@@ -1,20 +1,8 @@
-import { Sidebar, AdminHeader } from "./components";
+import { Sidebar } from "./components";
 import React, { useState } from "react";
 import CreateProductPage from "./pages/CreateProductPage";
-import AllProductsPage from "./pages/AllProductsPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
-
-// const CreateProduct = () => (
-//   <div className="text-gray-800 text-lg">Create Product Page</div>
-// );
-
-// const AllProducts = () => (
-//   <div className="text-gray-800 text-lg">All Products Page</div>
-// );
-
-// const Analytics = () => (
-//   <div className="text-gray-800 text-lg">Analytics Page</div>
-// );
+import AdminProductList from "./pages/AdminProductList";
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState("create");
@@ -24,7 +12,7 @@ const AdminPanel = () => {
       case "create":
         return <CreateProductPage />;
       case "products":
-        return <AllProductsPage />;
+        return <AdminProductList />;
       case "analytics":
         return <AnalyticsPage />;
       default:

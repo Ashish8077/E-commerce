@@ -1,101 +1,78 @@
 import { create } from "zustand";
 import axios from "axios";
-import { handleApiErro } from "../utils/handleApiError";
+import { handleApiError } from "../utils/handleApiError";
 
 const useUserStore = create((set) => ({
   user: null,
-  auth: {
-    loading: false,
-    emailError: "",
-    generalError: "",
-    checkingAuth: true,
-  },
+  checkingAuth: true,
+  loading: false,
+  generalError: null,
+  emailError: null,
+  authError: null,
+
   signup: async (signupData) => {
     try {
-      set((state) => ({
-        auth: {
-          ...state.auth,
-          loading: true,
-          emailError: "",
-          generalError: "",
-        },
-      }));
+      set({ loading: true, emailError: null, generalError: null });
       const res = await axios.post("/api/auth/signup", signupData);
-      set((state) => ({
-        user: res.data.data,
-        auth: { ...state.auth, loading: false },
-      }));
-
-      return { success: res.data.success };
+      set({ user: res.data.data, loading: false });
+      return { success: true, data: res.data.data };
     } catch (error) {
-      const message = handleApiErro(error);
-      set((state) => ({
-        auth: {
-          ...state.auth,
-          loading: false,
-          emailError: error?.response?.status === 400 ? message : "",
-          generalError: error?.response?.status !== 400 ? message : "",
-        },
-      }));
+      console.error("Signup error:", error);
+      const message = handleApiError(error) || "Something went wrong";
+      const isValidationError = error?.response?.status === 400;
+      set({
+        loading: false,
+        emailError: isValidationError ? message : null,
+        generalError: !isValidationError ? message : null,
+      });
+      return { success: false, error: message };
     }
   },
+
   login: async (loginData) => {
     try {
-      set((state) => ({
-        auth: { ...state.auth, loading: true },
-      }));
+      set({ loading: true, authError: null, generalError: null });
       const res = await axios.post("/api/auth/login", loginData);
-      set((state) => ({
-        user: res.data.data,
-        auth: { ...state.auth, loading: false },
-      }));
-      return { success: res.data.success };
+      set({ user: res.data.data, loading: false });
+      return { success: true, data: res.data.data };
     } catch (error) {
-      const message = handleApiErro(error);
-
-      set((state) => ({
-        auth: {
-          ...state.auth,
-          loading: false,
-          generalError: message,
-        },
-      }));
-      return { success: error?.response?.data?.success };
+      console.error("Login error:", error);
+      const message = handleApiError(error) || "Something went wrong";
+      const isAuthenticationError = error?.response?.status === 401;
+      console.log(isAuthenticationError);
+      set({
+        loading: false,
+        authError: isAuthenticationError ? message : null,
+        generalError: !isAuthenticationError ? message : null,
+      });
+      return { success: false, error: message };
     }
   },
+
   logout: async () => {
     try {
-      set((state) => ({
-        auth: { ...state.auth, loading: true },
-      }));
-      const res = await axios.post("/api/auth/logout");
-      set((state) => ({ user: null, auth: { ...state.auth, loading: false } }));
+      set({ loading: true, generalError: null });
+      await axios.post("/api/auth/logout");
+      set({ user: null, loading: false });
+      return { success: true };
     } catch (error) {
-      const message = handleApiErro();
-      set((state) => ({
-        auth: { ...state.auth, loading: false, generalError: message },
-      }));
+      const message = handleApiError(error) || "Something went wrong";
+      set({ loading: false, generalError: message });
+      return { success: false, error: message };
     }
   },
+
   checkAuth: async () => {
     try {
-      set((state) => ({
-        auth: { ...state.auth, checkingAuth: true },
-      }));
+      set({ checkingAuth: true, generalError: null });
       const res = await axios.get("/api/auth/profile");
-      set((state) => ({
-        user: res.data.data,
-        auth: { ...state.auth, checkingAuth: false },
-      }));
+      set({ user: res.data.data, checkingAuth: false });
+      return { success: true, data: res.data.data, checkingAuth: false };
     } catch (error) {
-      const message = handleApiErro();
-      set((state) => ({
-        auth: {
-          ...state.auth,
-          checkingAuth: false,
-          generalError: message,
-        },
-      }));
+      console.error("CheckAuth error:", error);
+      const message = handleApiError(error);
+      set({ checkingAuth: false, user: null, generalError: message });
+      return { success: false, error: message };
     }
   },
 }));

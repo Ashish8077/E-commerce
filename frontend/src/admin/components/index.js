@@ -1,4 +1,5 @@
 import Sidebar from "./Sidebar";
-import AdminHeader from "./AdminHeader";
+import EmptyProductState from "./EmptyProductState";
+import DeletePopup from "./DeletePopup";
 
-export { Sidebar, AdminHeader };
+export { Sidebar, EmptyProductState, DeletePopup };

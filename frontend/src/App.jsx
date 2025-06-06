@@ -1,4 +1,4 @@
-import { NavBar, Footer, LoadingSpinner } from "./components";
+import { NavBar, Footer, LoadingSpinner, ToasterProvider } from "./components";
 import HomePage from "./pages/HomePage";
 import CategoryPage from "./pages/CategoryPage";
 import ProductListingPage from "./pages/ProductListingPage";
@@ -16,7 +16,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 
 import AdminPanel from "./admin/AdminPanel";
 import useUserStore from "./store/authStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -24,43 +24,56 @@ function App() {
 
   useEffect(() => {
     checkAuth();
-  }, [checkAuth]);
+  }, []);
 
   if (checkingAuth) return <LoadingSpinner />;
-
-  const isAdmin = user && user.role === "admin";
-  const customer = user && user.role === "customer";
 
   return (
     <>
       <NavBar />
       <Routes>
-        <Route
-          path="/"
-          element={
-            isAdmin ? <Navigate to={"/secret-dashboard"} /> : <HomePage />
-          }></Route>
+        <Route path="/" element={<HomePage />} />
 
         <Route
           path="/secret-dashboard"
-          element={isAdmin ? <AdminPanel /> : <Navigate to={"/"} />}
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminPanel />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/cart"
-          element={customer ? <CartPage /> : <Navigate to={"/"} />}
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <CartPage />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/checkout"
-          element={customer ? <CheckoutPage /> : <Navigate to={"/"} />}
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <CheckoutPage />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/order-confirmation"
-          element={customer ? <OrderConfirmationPage /> : <Navigate to={"/"} />}
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <OrderConfirmationPage />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/profile"
-          element={customer ? <UserProfilePage /> : <Navigate to={"/"} />}
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <UserProfilePage />
+            </ProtectedRoute>
+          }
         />
 
         <Route path="/contact" element={<ContactPage />} />
@@ -70,12 +83,35 @@ function App() {
           element={<ProductListingPage />}
         />
 
-        <Route path="/signup" element={user ? <HomePage /> : <SignupPage />} />
-        <Route path="/login" element={user ? <HomePage /> : <LoginPage />} />
+        <Route
+          path="/signup"
+          element={
+            !user ? (
+              <SignupPage />
+            ) : user.role === "admin" ? (
+              <Navigate to="/secret-dashboard" replace />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            !user ? (
+              <LoginPage />
+            ) : user.role === "admin" ? (
+              <Navigate to="/secret-dashboard" replace />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-      <Footer />
+      <ToasterProvider />
+      {(!user || user.role !== "admin") && <Footer />}
     </>
   );
 }

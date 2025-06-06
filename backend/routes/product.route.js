@@ -20,6 +20,6 @@ router.post(
   createProduct
 );
 router.put("/:id", protectRoute, adminRoute, updateProduct);
-router.delete("/:id", deleteProduct);
+router.delete("/:id", protectRoute, adminRoute, deleteProduct);
 
 export default router;

@@ -24,12 +24,11 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     subCategory: {
-      type: String, // e.g., "Men's Clothing"
+      type: String,
       required: true,
     },
     isFeatured: {
       type: Boolean,
-      require: true,
       default: false,
     },
   },

@@ -1,13 +1,19 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
-import {
-  categories,
-  featuredProducts,
-  categoriesData,
-} from "../data/categoriesData";
-import { Button } from "../components";
+import { Link, useNavigate } from "react-router-dom";
+import { categories, featuredProducts } from "../data/categoriesData";
+
+import useUserStore from "../store/authStore";
 
 const HomePage = () => {
+  const { user, checkingAuth } = useUserStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!checkingAuth && user?.role === "admin") {
+      navigate("/secret-dashboard", { replace: true });
+    }
+  }, [checkingAuth, user, navigate]);
+
   useEffect(() => {
     if (window.location.hash) {
       const el = document.querySelector(window.location.hash);

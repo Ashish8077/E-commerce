@@ -1,3 +1,3 @@
-export const handleApiErro = (error) => {
+export const handleApiError = (error) => {
   return error?.response?.data?.error || error?.message;
 };

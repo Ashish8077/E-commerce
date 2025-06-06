@@ -14,8 +14,7 @@ const Signup = () => {
     reset,
   } = useForm({ resolver: yupResolver(signupSchema) });
 
-  const { signup, auth } = useUserStore();
-  const emailError = auth.emailError;
+  const { signup, emailError } = useUserStore();
 
   const handleSignup = async (data) => {
     const { success } = await signup(data);
@@ -48,6 +47,7 @@ const Signup = () => {
 
         <Input
           label="Password"
+          type="password"
           placeholder="••••••••"
           name="password"
           {...register("password")}
