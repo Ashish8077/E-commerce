@@ -76,35 +76,23 @@ const CreateProductPage = () => {
           onChange={handleImageChange}
           error={errors.image?.message}
         />
-        <div className="flex justify-between">
-          <div>
-            <Select
-              options={[
-                "Electronics",
-                "Fashion",
-                "Health & Wellness",
-                "Personal Care",
-              ]}
-              name="category"
-              option="Select category"
-              {...register("category")}
-            />
-            {errors.category && (
-              <p className="text-red-500 mt-1">{errors.category.message}</p>
-            )}
-          </div>
 
-          <div>
-            <Select
-              options={Object.keys(subCategoryMap)}
-              name="subCategory"
-              option="Select subCategory"
-              {...register("subCategory")}
-            />
-            {errors.category && (
-              <p className="text-red-500 mt-1">{errors.subCategory.message}</p>
-            )}
-          </div>
+        <div>
+          <Select
+            options={[
+              "Smartphones",
+              "Audio Devices",
+              "Laptops & Tablets",
+              "Smart Home Devices",
+            ]}
+            className="w-full"
+            name="category"
+            option="Select category"
+            {...register("category")}
+          />
+          {errors.category && (
+            <p className="text-red-500 mt-1">{errors.category.message}</p>
+          )}
         </div>
 
         <Button className="flex justify-center">

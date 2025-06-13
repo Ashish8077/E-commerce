@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const DeletePopup = ({ setIsOpen, product }) => {
+const DeletePopup = ({ setIsOpen, product, setRefresh }) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleCancel = () => {
@@ -11,9 +11,16 @@ const DeletePopup = ({ setIsOpen, product }) => {
   const handleDelete = async () => {
     const id = product.id;
     try {
-      await axios.delete(`/api/products/${id}`);
+      setIsDeleting(true);
+      const res = await axios.delete(`/api/products/${id}`);
+      if (res.data.success) {
+        setIsDeleting(false);
+        setIsOpen(false);
+        setRefresh((prev) => !prev);
+      }
     } catch (error) {
       console.error("Error while Deleting Product: ", error);
+      setIsDeleting(false);
     }
   };
 
@@ -34,7 +41,8 @@ const DeletePopup = ({ setIsOpen, product }) => {
           </button>
           <button
             className="bg-red-600 p-2 text-md text-white font-medium rounded-xl cursor-pointer"
-            onClick={handleDelete}>
+            onClick={handleDelete}
+            disabled={isDeleting}>
             {isDeleting ? "Deleting..." : "Delete"}
           </button>
         </div>

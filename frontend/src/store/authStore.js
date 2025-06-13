@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 import { handleApiError } from "../utils/handleApiError";
 
-const useUserStore = create((set) => ({
+const useUserStore = create((set, get) => ({
   user: null,
   checkingAuth: true,
   loading: false,
@@ -39,7 +39,6 @@ const useUserStore = create((set) => ({
       console.error("Login error:", error);
       const message = handleApiError(error) || "Something went wrong";
       const isAuthenticationError = error?.response?.status === 401;
-      console.log(isAuthenticationError);
       set({
         loading: false,
         authError: isAuthenticationError ? message : null,
@@ -75,6 +74,46 @@ const useUserStore = create((set) => ({
       return { success: false, error: message };
     }
   },
+  refreshToken: async () => {
+    //Prevetn multiple simultaneous refresh attempts
+    if (get().checkAuth) return;
+    set({ checkingAuth: true });
+    try {
+      const res = await axios.post("/api/auth/refresh-token");
+      set({ checkingAuth: false });
+    } catch (error) {
+      set({ user: null, checkingAuth: false });
+      throw error;
+    }
+  },
 }));
+
+let refreshPromise = null;
+
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        //If  refresh is already in progress, wait for it to complete
+        if (refreshPromise) {
+          await refreshPromise;
+          return axios(originalRequest);
+        }
+        //start a new refresh process
+        refreshPromise = useUserStore.getState().refreshToken();
+        await refreshPromise;
+        refreshPromise = null;
+        return axios(originalRequest);
+      } catch (refreshError) {
+        useUserStore.getState().logout();
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default useUserStore;

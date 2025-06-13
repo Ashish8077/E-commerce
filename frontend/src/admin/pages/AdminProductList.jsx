@@ -5,6 +5,7 @@ import { handleApiError } from "../../utils/handleApiError";
 import axios from "axios";
 import { LoadingSpinner } from "../../components";
 import { EmptyProductState, DeletePopup } from "../components";
+import truncateWords from "../../utils/stringUtils";
 
 const AdminProductList = () => {
   const [products, setProducts] = useState([]);
@@ -30,9 +31,9 @@ const AdminProductList = () => {
     fetchAllProducts();
   }, [refresh]);
 
-  if (loading) return <LoadingSpinner />;
+  console.log(refresh);
 
-  
+  if (loading) return <LoadingSpinner />;
 
   return (
     <>
@@ -76,8 +77,8 @@ const AdminProductList = () => {
                         />
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-white">
-                          {product.name}
+                        <div className="text-sm font-medium text-white ">
+                          {truncateWords(product.name)}
                         </div>
                       </div>
                     </div>
@@ -124,7 +125,11 @@ const AdminProductList = () => {
             </tbody>
           </table>
           {isOpen && (
-            <DeletePopup setIsOpen={setIsOpen} product={selectedProduct} />
+            <DeletePopup
+              setIsOpen={setIsOpen}
+              product={selectedProduct}
+              setRefresh={setRefresh}
+            />
           )}
         </>
       )}

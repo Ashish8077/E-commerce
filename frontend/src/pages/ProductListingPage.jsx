@@ -1,18 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { categoriesData } from "../data/categoriesData";
+import useProductStore from "../store/productStore";
+import { formatPriceInINR } from "../utils/priceUtils";
 
 const ProductListingPage = () => {
-  const { categoryName, subcategoryName } = useParams();
+  const { categoryName } = useParams();
+  const { fetchProductsByCategories, products } = useProductStore();
   const decodedCategory = decodeURIComponent(categoryName);
-  const decodedSubcat = decodeURIComponent(subcategoryName);
-  const subcategories = categoriesData[decodedCategory][decodedSubcat];
-  console.log(
-    subcategories.map((cat) => {
-      console.log(cat);
-      return "Hello";
-    })
-  );
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      await fetchProductsByCategories(decodedCategory);
+    };
+    fetchProducts();
+  }, [decodedCategory]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-gradient-to-r from-purple-600 via-indigo-700 to-blue-600 text-white py-16 text-center">
@@ -39,14 +42,14 @@ const ProductListingPage = () => {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {subcategories.map(({ id, name, price }) => (
+          {products?.map(({ id, image, name, price }) => (
             <div
               key={id}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer flex flex-col justify-between">
               <img
-                src={`https://via.placeholder.com/400x300?text=Product+${id}`}
-                alt={`Product ${id}`}
-                className="w-full h-48 object-cover"
+                src={image}
+                alt={name}
+                className="w-full h-48 object-contain"
                 loading="lazy"
               />
               <div className="p-4">
@@ -54,7 +57,7 @@ const ProductListingPage = () => {
                   {name}
                 </h3>
                 <p className="mt-2 text-indigo-600 font-bold text-xl">
-                  ₹{price}
+                  {formatPriceInINR(price)}
                 </p>
                 <button className="mt-4 w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition duration-300">
                   Add to Cart

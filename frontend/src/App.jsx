@@ -77,11 +77,14 @@ function App() {
         />
 
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/category/:categoryName" element={<CategoryPage />} />
         <Route
-          path="/category/:categoryName/:subcategoryName"
+          path="/category/:categoryName"
           element={<ProductListingPage />}
         />
+        {/* <Route
+          path="/category/:categoryName/:subcategoryName"
+          element={}
+        /> */}
 
         <Route
           path="/signup"

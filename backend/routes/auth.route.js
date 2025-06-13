@@ -4,6 +4,7 @@ import {
   login,
   logout,
   getProfile,
+  refreshToken,
 } from "../controllers/auth.controller.js";
 import { validate } from "../middleware/validate.middleware.js";
 import { signupSchema, loginSchema } from "../validations/user.validation.js";
@@ -19,6 +20,7 @@ const router = express.Router();
 router.post("/signup", validate(signupSchema), normalizeEmail, signup);
 router.post("/login", validate(loginSchema), normalizeEmail, login);
 router.post("/logout", logout);
+router.post("/refresh-token", refreshToken);
 router.get("/profile", protectRoute, getProfile);
 
 export default router;

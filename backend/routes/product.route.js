@@ -3,6 +3,7 @@ import {
   createProduct,
   deleteProduct,
   getAllProducts,
+  getProductsByCategory,
   updateProduct,
 } from "../controllers/product.controller.js";
 import { adminRoute, protectRoute } from "../middleware/auth.middleware.js";
@@ -12,6 +13,7 @@ import { createProductSchema } from "../validations/product.validation.js";
 const router = express.Router();
 
 router.get("/", protectRoute, adminRoute, getAllProducts);
+router.get("/:categoryName", getProductsByCategory);
 router.post(
   "/createProduct",
   protectRoute,

@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import jwt, { decode } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import {
   checkExistingUser,
   createUser,
@@ -7,6 +7,7 @@ import {
   logoutUser,
 } from "../services/auth.service.js";
 import { sendResponse } from "../utils/response.util.js";
+import { redis } from "../lib/redis.js";
 
 export const signup = async (req, res) => {
   try {
@@ -85,6 +86,50 @@ export const logout = async (req, res) => {
     });
   } catch (error) {
     console.error(`Error in logout controller ${error.message}`);
+    return sendResponse(res, 500, {
+      success: false,
+      error: "Internal server error",
+    });
+  }
+};
+
+export const refreshToken = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken)
+      return sendResponse(res, 401, {
+        success: false,
+        error: "Unauthorized - no access token provided",
+      });
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+    const storedToken = await redis.get(`storeRefreshToken:${decoded.userId}`);
+
+    if (storedToken !== refreshToken) {
+      return sendResponse(res, 401, {
+        success: false,
+        message: "Authentication failed.",
+        error: "Invalid refresh token",
+      });
+    }
+  
+    const accessToken = jwt.sign(
+      { userId: decoded.userId },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 15 * 60 * 1000,
+    });
+    return sendResponse(res, 200, {
+      success: true,
+      message: "Token refreshed successfully",
+    });
+  } catch (error) {
+    console.error(`Error in refreshToken controller ${error.message}`);
     return sendResponse(res, 500, {
       success: false,
       error: "Internal server error",

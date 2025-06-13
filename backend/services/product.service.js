@@ -10,7 +10,6 @@ export const createProductService = async ({
   price,
   image,
   category,
-  subCategory,
 }) => {
   let imageUrl = "";
 
@@ -32,6 +31,21 @@ export const createProductService = async ({
     price,
     image: imageUrl,
     category,
-    subCategory,
   });
+};
+
+export const findProducts = async (category) => {
+  return await Product.find({ category });
+};
+
+export const deleteProductService = async (id) => {
+  const product = await Product.findById(id);
+  if (!product) throw new Error("Product not found");
+  if (product.image) {
+    const publicId = product.image.split("/").pop().split(".")[0];
+
+    await cloudinary.uploader.destroy(`productsImages/${publicId}`);
+  }
+  await Product.findByIdAndDelete(id);
+  return product;
 };

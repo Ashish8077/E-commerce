@@ -29,5 +29,4 @@ export const productSchema = yup.object({
       }
     }),
   category: yup.string().required("category is required"),
-  subCategory: yup.string().required("subCategory is required"),
 });

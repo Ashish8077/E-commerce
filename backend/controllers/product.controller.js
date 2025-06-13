@@ -2,6 +2,8 @@ import Product from "../models/product.model.js";
 import { sendResponse } from "../utils/response.util.js";
 import {
   createProductService,
+  deleteProductService,
+  findProducts,
   getAllProductsService,
 } from "../services/product.service.js";
 
@@ -53,13 +55,38 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const { id: productId } = req.params;
-    await Product.findByIdAndDelete(productId);
+    await deleteProductService(productId);
     return sendResponse(res, 200, {
       success: true,
       message: "Product Deleted Successfully",
     });
   } catch (error) {
     console.error(`Error in deleteProudct controller ${error.message}`);
+    return sendResponse(res, 500, {
+      success: false,
+      error: "Internal server error",
+    });
+  }
+};
+
+export const getProductsByCategory = async (req, res) => {
+  try {
+    // const grouped = {};
+    const { categoryName: category } = req.params;
+
+    console.log(category);
+
+    if (!category)
+      return sendResponse(res, 400, {
+        success: false,
+        error: "Category is required",
+      });
+
+    const products = await findProducts(category);
+
+    sendResponse(res, 200, { success: true, data: products });
+  } catch (error) {
+    console.error(`Error in getProductsByCategory controller ${error.message}`);
     return sendResponse(res, 500, {
       success: false,
       error: "Internal server error",
