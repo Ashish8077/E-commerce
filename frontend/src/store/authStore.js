@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axios from "axios";
+import axios from "../../lib/axios";
 import { handleApiError } from "../utils/handleApiError";
 
 const useUserStore = create((set, get) => ({
@@ -13,7 +13,7 @@ const useUserStore = create((set, get) => ({
   signup: async (signupData) => {
     try {
       set({ loading: true, emailError: null, generalError: null });
-      const res = await axios.post("/api/auth/signup", signupData);
+      const res = await axios.post("/auth/signup", signupData);
       set({ user: res.data.data, loading: false });
       return { success: true, data: res.data.data };
     } catch (error) {
@@ -32,7 +32,7 @@ const useUserStore = create((set, get) => ({
   login: async (loginData) => {
     try {
       set({ loading: true, authError: null, generalError: null });
-      const res = await axios.post("/api/auth/login", loginData);
+      const res = await axios.post("/auth/login", loginData);
       set({ user: res.data.data, loading: false });
       return { success: true, data: res.data.data };
     } catch (error) {
@@ -51,7 +51,7 @@ const useUserStore = create((set, get) => ({
   logout: async () => {
     try {
       set({ loading: true, generalError: null });
-      await axios.post("/api/auth/logout");
+      await axios.post("/auth/logout");
       set({ user: null, loading: false });
       return { success: true };
     } catch (error) {
@@ -64,7 +64,7 @@ const useUserStore = create((set, get) => ({
   checkAuth: async () => {
     try {
       set({ checkingAuth: true, generalError: null });
-      const res = await axios.get("/api/auth/profile");
+      const res = await axios.get("/auth/profile");
       set({ user: res.data.data, checkingAuth: false });
       return { success: true, data: res.data.data, checkingAuth: false };
     } catch (error) {
@@ -79,7 +79,7 @@ const useUserStore = create((set, get) => ({
     if (get().checkAuth) return;
     set({ checkingAuth: true });
     try {
-      const res = await axios.post("/api/auth/refresh-token");
+      const res = await axios.post("/auth/refresh-token");
       set({ checkingAuth: false });
     } catch (error) {
       set({ user: null, checkingAuth: false });

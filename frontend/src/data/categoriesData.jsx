@@ -91,3 +91,10 @@ export const categoriesData = {
     { id: 96, name: "Smart Vacuum", price: 229.99 },
   ],
 };
+
+export const categoryBackground = {
+  Smartphones: "/ElectronicsBg.jpg",
+  "Audio Devices": "/AudioBg.jpg",
+  "Laptops & Tablets": "/lapandTabBg.jpg",
+  "Smart Home Devices": "/smartHomes.avif",
+};

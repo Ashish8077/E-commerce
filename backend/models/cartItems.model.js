@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { toJSONPlugin } from "../utils/toJSON.plugin.util.js";
 
 const cartItemSchema = new mongoose.Schema({
   product: {
@@ -18,6 +19,8 @@ const cartSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+cartSchema.plugin(toJSONPlugin);
 
 const Cart = mongoose.model("Cart", cartSchema);
 export default Cart;
