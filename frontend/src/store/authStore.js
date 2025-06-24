@@ -76,7 +76,7 @@ const useUserStore = create((set, get) => ({
   },
   refreshToken: async () => {
     //Prevetn multiple simultaneous refresh attempts
-    if (get().checkAuth) return;
+    if (get().checkingAuth) return;
     set({ checkingAuth: true });
     try {
       const res = await axios.post("/auth/refresh-token");

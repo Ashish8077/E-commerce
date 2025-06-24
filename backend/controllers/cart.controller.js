@@ -55,8 +55,57 @@ export const addToCart = async (req, res) => {
       .populate("user")
       .populate("items.product");
     sendResponse(res, 200, { success: true, data: populatedCart });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(`Error in addToCart controller: ${error.message}`);
+    sendResponse(res, 500, { success: false, error: "Internal server error" });
+  }
+};
+
+export const updateQuantity = async (req, res) => {
+  try {
+    const { productId, updatedQuantity: quantity } = req.body;
+    console.log(quantity);
+    const userId = req.user._id;
+    let cart = await Cart.findOne({ user: userId });
+    const cartItem = cart.items.find(
+      (item) => item.product._id.toString() === productId
+    );
+    if (cartItem) {
+      cartItem.quantity = quantity;
+    } else {
+      return sendResponse(res, 404, {
+        success: false,
+        message: "Item not found in cart",
+      });
+    }
+    console.log(cart);
+    await cart.save();
+    sendResponse(res, 200, { success: true });
+  } catch (error) {
+    console.error(`Error in updateQuantity controller: ${error.message}`);
+    sendResponse(res, 500, { success: false, error: "Internal server error" });
+  }
+};
+
+export const removeAllProducts = async (req, res) => {
+  try {
+    const { id: productId } = req.params;
+    const userId = req.user._id;
+    let cart = await Cart.findOne({ user: userId });
+    if (!productId) {
+      cart.items = [];
+    } else {
+      cart.items = cart.items.filter((item) => {
+        return item.product.toString() !== productId;
+      });
+    }
+    await cart.save();
+    sendResponse(res, 200, {
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    console.error(`Error in removeAllProducts controller: ${error.message}`);
     sendResponse(res, 500, { success: false, error: "Internal server error" });
   }
 };

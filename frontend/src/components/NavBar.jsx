@@ -14,12 +14,14 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import useUserStore from "../store/authStore";
+import useCartStore from "../store/cartStore";
 
 const Navbar = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const location = useLocation();
 
   const { user, logout } = useUserStore();
+  const { cart } = useCartStore();
 
   const isAdmin = user?.role === "admin";
   const customer = user && user?.role === "customer";
@@ -49,7 +51,7 @@ const Navbar = () => {
     setOpenMenu(false);
   }, [location]);
 
-  return (
+    return (
     <nav className="bg-gradient-to-r from-purple-600 via-indigo-700 to-blue-600 text-white sticky top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto px-6 lg:px-20 py-4 flex justify-between items-center">
         {/* Logo */}
@@ -140,7 +142,7 @@ const Navbar = () => {
                       className="relative cursor-pointer lg:text-xl">
                       <ShoppingCart className="w-6 h-6" />
                       <span className="absolute -top-2 -right-2 bg-white text-indigo-700 text-xs rounded-full px-1.5 py-0.5 font-bold">
-                        2
+                        {cart.length}
                       </span>
                     </Link>
                     <Link to="/profile">

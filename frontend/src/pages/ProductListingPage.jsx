@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { categoryBackground } from "../data/categoriesData";
 
@@ -12,6 +12,8 @@ const ProductListingPage = () => {
   const { fetchProductsByCategories, products, loading } = useProductStore();
   const { addToCart } = useCartStore();
   const decodedCategory = decodeURIComponent(categoryName);
+  const [added, setAdded] = useState(false);
+  const [addingProductId, setAddingProductId] = useState(null);
 
   const background = categoryBackground[decodedCategory];
 
@@ -25,7 +27,14 @@ const ProductListingPage = () => {
   if (loading) return <LoadingSpinner />;
 
   const handleAddProduct = async (product) => {
-    await addToCart(product);
+    setAddingProductId(product.id);
+    const { success } = await addToCart(product);
+    if (success) {
+      setAdded(true);
+      setTimeout(() => setAdded(false), 1500);
+    } else {
+      setAddingProductId(null);
+    }
   };
 
   return (
@@ -77,9 +86,16 @@ const ProductListingPage = () => {
                     {formatPriceInINR(product.price)}
                   </p>
                   <button
-                    className="mt-4 w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition duration-300 cursor-pointer"
-                    onClick={() => handleAddProduct(product)}>
-                    Add to Cart
+                    className={`mt-4 w-full bg-indigo-600  py-2 rounded-md hover:bg-indigo-700  cursor-pointer ${
+                      addingProductId === product.id && added
+                        ? "text-green-500"
+                        : "text-white transition duration-300"
+                    }`}
+                    onClick={() => handleAddProduct(product)}
+                    disabled={addingProductId === product.id && added}>
+                    {addingProductId === product.id && added
+                      ? "✔️ Added"
+                      : "Add to Cart"}
                   </button>
                 </div>
               </div>

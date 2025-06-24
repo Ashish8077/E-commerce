@@ -18,13 +18,19 @@ import AdminPanel from "./admin/AdminPanel";
 import useUserStore from "./store/authStore";
 import { useEffect, useState } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
+import useCartStore from "./store/cartStore";
 
 function App() {
   const { checkAuth, checkingAuth, user } = useUserStore();
+  const { fetchCartItems } = useCartStore();
 
   useEffect(() => {
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    fetchCartItems();
+  }, [fetchCartItems]);
 
   if (checkingAuth) return <LoadingSpinner />;
 

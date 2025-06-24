@@ -3,7 +3,6 @@ import { ShoppingBagIcon } from "@heroicons/react/24/outline"; // Optional: Hero
 import { categoriesData } from "../data/categoriesData";
 
 const EmptyCartMessage = () => {
-  console.log(categoriesData);
   return (
     <div className="flex flex-col items-center justify-center h-[60vh] text-center px-4">
       <ShoppingBagIcon className="w-16 h-16 text-gray-400 mb-4" />

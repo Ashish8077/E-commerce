@@ -5,16 +5,24 @@ import useCartStore from "../store/cartStore";
 import { useEffect } from "react";
 import { EmptyCartMessage, LoadingSpinner } from "../components";
 import { formatPriceInINR } from "../utils/priceUtils";
+import toast from "react-hot-toast";
 
 const CartPage = () => {
-  const { fetchCartItems, cart, loading } = useCartStore();
+  const { cart, loading, updateQuantity, removeFromCart } = useCartStore();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchCartItems();
-  }, []);
-
   if (loading) return <LoadingSpinner />;
+
+  const handleDeleteProduct = async (productId) => {
+    const { success } = await removeFromCart(productId);
+    if (success) {
+      toast.success("Product successfully removed from the cart.");
+    }
+  };
+
+  const handleQuantity = async (operation, productId) => {
+    updateQuantity(operation, productId);
+  };
 
   return (
     <div className="w-full px-2 sm:px-4 md:px-6 py-6 max-w-6xl mx-auto">
@@ -32,7 +40,7 @@ const CartPage = () => {
               {/* Cart Item */}
               {cart?.map((item, i) => (
                 <div
-                  key={item.product?.id + i}
+                  key={item._id}
                   className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b pb-4">
                   <div className="flex flex-1 items-center gap-4">
                     <img
@@ -51,11 +59,15 @@ const CartPage = () => {
                   </div>
 
                   <div className="">
-                    <button className="w-8 h-8 bg-gray-100 shadow-md  rounded hover:bg-gray-200 text-xl cursor-pointer">
+                    <button
+                      className="w-8 h-8 bg-gray-100 shadow-md  rounded hover:bg-gray-200 text-xl cursor-pointer"
+                      onClick={() => handleQuantity("-", item.product.id)}>
                       −
                     </button>
                     <span className="text-lg px-2">{item.quantity}</span>
-                    <button className="w-8 h-8 bg-gray-100 shadow-md   rounded hover:bg-gray-200 text-xl  cursor-pointer">
+                    <button
+                      className="w-8 h-8 bg-gray-100 shadow-md   rounded hover:bg-gray-200 text-xl  cursor-pointer"
+                      onClick={() => handleQuantity("+", item.product.id)}>
                       +
                     </button>
                   </div>
@@ -64,7 +76,9 @@ const CartPage = () => {
                     {formatPriceInINR(item.product?.price)}
                   </div>
 
-                  <button className="text-red-500 hover:text-red-700 text-sm sm:text-base cursor-pointer">
+                  <button
+                    className="text-red-500 hover:text-red-700 text-sm sm:text-base cursor-pointer"
+                    onClick={() => handleDeleteProduct(item.product.id)}>
                     <Trash />
                   </button>
                 </div>
