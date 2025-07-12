@@ -41,7 +41,7 @@ export const updateProduct = async (req, res) => {
   const { id: productId } = req.params;
 
   const existingProduct = await Product.findById(productId);
-  console.log(existingProduct);
+  existingProduct;
 
   const updatedProduct = await Product.findByIdAndUpdate(
     productId,
@@ -74,7 +74,6 @@ export const getProductsByCategory = async (req, res) => {
     // const grouped = {};
     const { categoryName: category } = req.params;
 
-    console.log(category);
 
     if (!category)
       return sendResponse(res, 400, {

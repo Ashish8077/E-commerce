@@ -1,19 +1,36 @@
 import React from "react";
 import { user, orders } from "../data/UserData";
+// import useUserStore from "../store/authStore";
 
 const UserProfilePage = () => {
+  // const { user } = useUserStore();
+  // console.log(user);
   return (
     <div className="min-h-screen bg-gray-100 p-6 md:p-12">
       <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-center p-8 bg-indigo-600 text-white">
-          <img
-            src={user.avatar}
-            alt="User Avatar"
-            className="w-24 h-24 rounded-full border-4 border-white shadow-lg mb-4 md:mb-0 md:mr-8"
-          />
-          <div>
-            <h2 className="text-2xl font-bold">{user.name}</h2>
+          <div className=" flex flex-col items-center">
+            <img
+              src={user.avatar}
+              alt="User Avatar"
+              className="w-24 h-24 rounded-full border-4 border-white shadow-lg mb-4 md:mb-0 md:mr-8"
+            />
+            <input
+              type="file"
+              id="fileUpload"
+              accept="image/*"
+              // onChange={handleFileChange}
+              className="hidden"
+            />
+            <label
+              htmlFor="fileUpload"
+              className="border mt-4 cursor-pointer inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">
+              Upload Profile Image
+            </label>
+          </div>
+          <div className="border">
+            <h2 className="text-2xl font-bold ">{user.name}</h2>
             <p>{user.email}</p>
             <p>{user.phone}</p>
           </div>

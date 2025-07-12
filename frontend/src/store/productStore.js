@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axios from "axios";
+import axios from "../../lib/axios";
 import { handleApiError } from "../utils/handleApiError";
 
 const useProductStore = create((set) => ({
@@ -10,7 +10,7 @@ const useProductStore = create((set) => ({
   createProduct: async (productData) => {
     try {
       set({ loading: true, generalError: null });
-      const res = await axios.post("/api/products/createProduct", productData);
+      const res = await axios.post("/products/createProduct", productData);
 
       set((prevState) => ({
         products: [...prevState.products, res.data.data],
@@ -28,7 +28,7 @@ const useProductStore = create((set) => ({
   fetchProductsByCategories: async (categoryName) => {
     try {
       set({ loading: true, generalError: "" });
-      const res = await axios.get(`/api/products/${categoryName}`);
+      const res = await axios.get(`/products/${categoryName}`);
 
       set({
         loading: false,

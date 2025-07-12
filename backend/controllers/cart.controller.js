@@ -1,6 +1,5 @@
-// import mongoose from "mongoose";
+import mongoose from "mongoose";
 import Cart from "../models/cartItems.model.js";
-import Product from "../models/product.model.js";
 import { sendResponse } from "../utils/response.util.js";
 
 export const getCartProducts = async (req, res) => {
@@ -16,10 +15,15 @@ export const getCartProducts = async (req, res) => {
       "items.product",
       "name image price"
     );
+
     if (!cart) {
       return sendResponse(res, 200, { success: false, data: [] });
     }
-    return sendResponse(res, 200, { success: false, data: cart.items });
+    const cartWithVirtuals = cart.toJSON();
+    return sendResponse(res, 200, {
+      success: false,
+      data: cartWithVirtuals.items,
+    });
   } catch (error) {
     console.error(`Error in getCartPorducts controller ${error.message}`);
     return sendResponse(res, 500, {
@@ -34,6 +38,13 @@ export const addToCart = async (req, res) => {
     const userId = req.user._id;
     const { id: productId } = req.params;
     let cart = await Cart.findOne({ user: userId });
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return sendResponse(res, 400, {
+        success: false,
+        error: "Invalid product ID",
+      });
+    }
 
     if (!cart) {
       cart = new Cart({
@@ -64,7 +75,6 @@ export const addToCart = async (req, res) => {
 export const updateQuantity = async (req, res) => {
   try {
     const { productId, updatedQuantity: quantity } = req.body;
-    console.log(quantity);
     const userId = req.user._id;
     let cart = await Cart.findOne({ user: userId });
     const cartItem = cart.items.find(
@@ -78,7 +88,6 @@ export const updateQuantity = async (req, res) => {
         message: "Item not found in cart",
       });
     }
-    console.log(cart);
     await cart.save();
     sendResponse(res, 200, { success: true });
   } catch (error) {

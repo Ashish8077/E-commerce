@@ -16,7 +16,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 
 import AdminPanel from "./admin/AdminPanel";
 import useUserStore from "./store/authStore";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import useCartStore from "./store/cartStore";
 
@@ -29,8 +29,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetchCartItems();
-  }, [fetchCartItems]);
+    if (user && user.role === "customer") {
+      fetchCartItems();
+    }
+  }, [user, fetchCartItems]);
 
   if (checkingAuth) return <LoadingSpinner />;
 

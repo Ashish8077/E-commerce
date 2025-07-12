@@ -47,7 +47,7 @@ const Login = () => {
           type="password"
           placeholder="••••••••"
           name="password"
-          autocomplete="password"
+          autoComplete="password"
           {...register("password")}
           error={errors.password?.message}
         />

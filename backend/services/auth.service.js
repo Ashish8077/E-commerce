@@ -18,6 +18,7 @@ export const createUser = async (fullName, email, password) => {
 
 export const generateTokenAndSetCookie = async (res, userId) => {
   const { accessToken, refreshToken } = generateTokes(userId);
+
   await setRefreshToken(userId, refreshToken);
   await setCookies(res, accessToken, refreshToken);
 };

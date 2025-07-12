@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    
+
     isFeatured: {
       type: Boolean,
       default: false,
@@ -32,7 +32,17 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-productSchema.plugin(toJSONPlugin);
+productSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: (doc, ret) => {
+    ret.id = ret._id.toString();
+    delete ret._id;
+    delete ret.createdAt;
+    delete ret.updatedAt;
+    return ret;
+  },
+});
 
 const Product = mongoose.model("Product", productSchema);
 

@@ -112,12 +112,13 @@ export const refreshToken = async (req, res) => {
         error: "Invalid refresh token",
       });
     }
-  
+
     const accessToken = jwt.sign(
       { userId: decoded.userId },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" }
     );
+
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

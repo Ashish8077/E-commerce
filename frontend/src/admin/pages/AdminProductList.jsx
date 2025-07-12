@@ -2,7 +2,7 @@ import { Edit, Star, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import useProductStore from "../../store/productStore";
 import { handleApiError } from "../../utils/handleApiError";
-import axios from "axios";
+import axios from "../../../lib/axios";
 import { LoadingSpinner } from "../../components";
 import { EmptyProductState, DeletePopup } from "../components";
 import truncateWords from "../../utils/stringUtils";
@@ -17,7 +17,7 @@ const AdminProductList = () => {
   const fetchAllProducts = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("/api/products/");
+      const res = await axios.get("/products/");
       setProducts(res.data.data);
       setLoading(false);
     } catch (error) {

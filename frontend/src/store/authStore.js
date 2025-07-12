@@ -44,6 +44,7 @@ const useUserStore = create((set, get) => ({
         authError: isAuthenticationError ? message : null,
         generalError: !isAuthenticationError ? message : null,
       });
+      console.log(authError);
       return { success: false, error: message };
     }
   },
@@ -62,25 +63,28 @@ const useUserStore = create((set, get) => ({
   },
 
   checkAuth: async () => {
+    set({ checkingAuth: true, generalError: null });
     try {
-      set({ checkingAuth: true, generalError: null });
       const res = await axios.get("/auth/profile");
+
       set({ user: res.data.data, checkingAuth: false });
-      return { success: true, data: res.data.data, checkingAuth: false };
+      // return { success: true, data: res.data.data, checkingAuth: false };
     } catch (error) {
-      console.error("CheckAuth error:", error);
       const message = handleApiError(error);
       set({ checkingAuth: false, user: null, generalError: message });
-      return { success: false, error: message };
+
+      // return { success: false, error: message };
     }
   },
   refreshToken: async () => {
-    //Prevetn multiple simultaneous refresh attempts
     if (get().checkingAuth) return;
     set({ checkingAuth: true });
     try {
-      const res = await axios.post("/auth/refresh-token");
+      const response = await axios.post("/auth/refresh-token");
+      console.log(response);
+      get().checkAuth();
       set({ checkingAuth: false });
+      return response.data;
     } catch (error) {
       set({ user: null, checkingAuth: false });
       throw error;
@@ -91,25 +95,33 @@ const useUserStore = create((set, get) => ({
 let refreshPromise = null;
 
 axios.interceptors.response.use(
-  (response) => response,
+  // If the response is successful (no error), just return it unchanged.
+  (response) => {
+    return response;
+  },
+  // This is called if the response has an error, like a 401 unauthorized error.
   async (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/login") &&
+      !originalRequest.url.includes("/auth/signup")
+    ) {
       originalRequest._retry = true;
       try {
-        //If  refresh is already in progress, wait for it to complete
         if (refreshPromise) {
           await refreshPromise;
-          return axios(originalRequest);
+        } else {
+          refreshPromise = useUserStore.getState().refreshToken();
+          await refreshPromise;
         }
-        //start a new refresh process
-        refreshPromise = useUserStore.getState().refreshToken();
-        await refreshPromise;
-        refreshPromise = null;
         return axios(originalRequest);
       } catch (refreshError) {
         useUserStore.getState().logout();
         return Promise.reject(refreshError);
+      } finally {
+        refreshPromise = null;
       }
     }
     return Promise.reject(error);

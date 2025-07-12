@@ -8,13 +8,14 @@ import { formatPriceInINR } from "../utils/priceUtils";
 import toast from "react-hot-toast";
 
 const CartPage = () => {
-  const { cart, loading, updateQuantity, removeFromCart } = useCartStore();
+  const { cart, loading, updateQuantity, deleteItemFromCart, total, subTotal } =
+    useCartStore();
   const navigate = useNavigate();
 
   if (loading) return <LoadingSpinner />;
 
   const handleDeleteProduct = async (productId) => {
-    const { success } = await removeFromCart(productId);
+    const { success } = await deleteItemFromCart(productId);
     if (success) {
       toast.success("Product successfully removed from the cart.");
     }
@@ -40,7 +41,7 @@ const CartPage = () => {
               {/* Cart Item */}
               {cart?.map((item, i) => (
                 <div
-                  key={item._id}
+                  key={item.id}
                   className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b pb-4">
                   <div className="flex flex-1 items-center gap-4">
                     <img
@@ -90,15 +91,15 @@ const CartPage = () => {
               <div className="space-y-2 text-sm sm:text-base text-gray-700">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>$90.00</span>
+                  <span>{formatPriceInINR(subTotal)}</span>
                 </div>
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                   <span>Discount</span>
                   <span>−$10.00</span>
-                </div>
+                </div> */}
                 <div className="flex justify-between font-bold text-lg pt-2 border-t">
                   <span>Total</span>
-                  <span>$80.00</span>
+                  <span>{formatPriceInINR(total)}</span>
                 </div>
               </div>
               <button

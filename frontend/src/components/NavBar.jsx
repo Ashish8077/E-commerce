@@ -51,7 +51,7 @@ const Navbar = () => {
     setOpenMenu(false);
   }, [location]);
 
-    return (
+  return (
     <nav className="bg-gradient-to-r from-purple-600 via-indigo-700 to-blue-600 text-white sticky top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto px-6 lg:px-20 py-4 flex justify-between items-center">
         {/* Logo */}

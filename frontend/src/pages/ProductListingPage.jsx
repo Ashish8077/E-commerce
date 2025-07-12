@@ -6,13 +6,14 @@ import useProductStore from "../store/productStore";
 import { formatPriceInINR } from "../utils/priceUtils";
 import { Header, LoadingSpinner } from "../components";
 import useCartStore from "../store/cartStore";
+import useUserStore from "../store/authStore";
 
 const ProductListingPage = () => {
   const { categoryName } = useParams();
   const { fetchProductsByCategories, products, loading } = useProductStore();
-  const { addToCart } = useCartStore();
+  const { user } = useUserStore();
+  const { addToCart, cart } = useCartStore();
   const decodedCategory = decodeURIComponent(categoryName);
-  const [added, setAdded] = useState(false);
   const [addingProductId, setAddingProductId] = useState(null);
 
   const background = categoryBackground[decodedCategory];
@@ -26,15 +27,17 @@ const ProductListingPage = () => {
 
   if (loading) return <LoadingSpinner />;
 
+  const isProductInCart = (cart, productId) => {
+    const exists = cart.some((item) => item.product.id === productId);
+    return exists;
+  };
+
   const handleAddProduct = async (product) => {
+    if (!user) return;
+    if (isProductInCart(cart, product.id)) return;
     setAddingProductId(product.id);
     const { success } = await addToCart(product);
-    if (success) {
-      setAdded(true);
-      setTimeout(() => setAdded(false), 1500);
-    } else {
-      setAddingProductId(null);
-    }
+    setAddingProductId(null);
   };
 
   return (
@@ -87,14 +90,19 @@ const ProductListingPage = () => {
                   </p>
                   <button
                     className={`mt-4 w-full bg-indigo-600  py-2 rounded-md hover:bg-indigo-700  cursor-pointer ${
-                      addingProductId === product.id && added
-                        ? "text-green-500"
-                        : "text-white transition duration-300"
+                      isProductInCart(cart, product.id)
+                        ? "cursor-not-allowed font-medium"
+                        : "bg-indigo-600 text-white hover:bg-indigo-700"
                     }`}
                     onClick={() => handleAddProduct(product)}
-                    disabled={addingProductId === product.id && added}>
-                    {addingProductId === product.id && added
+                    disabled={
+                      isProductInCart(cart, product.id) ||
+                      addingProductId === product.id
+                    }>
+                    {isProductInCart(cart, product.id)
                       ? "✔️ Added"
+                      : addingProductId === product.id
+                      ? "Adding..."
                       : "Add to Cart"}
                   </button>
                 </div>

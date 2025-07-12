@@ -2,9 +2,8 @@ import React, { useEffect } from "react";
 import { ChevronRight } from "lucide-react";
 import { useParams, Link } from "react-router-dom";
 import { categoriesData } from "../data/categoriesData";
-import { name } from "ejs";
 import useProductStore from "../store/productStore";
-import axios from "axios";
+
 import { useState } from "react";
 import { formatPriceInINR } from "../utils/priceUtils";
 
@@ -70,8 +69,6 @@ const CategoryPage = () => {
   const { categoryName } = useParams();
   const { fetchProductsByCategories, products } = useProductStore();
   const decodedCategory = decodeURIComponent(categoryName);
-
-
 
   return (
     <div className="min-h-screen bg-gray-50">

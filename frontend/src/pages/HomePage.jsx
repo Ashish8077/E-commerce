@@ -3,10 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { categories, featuredProducts } from "../data/categoriesData";
 
 import useUserStore from "../store/authStore";
+import useCartStore from "../store/cartStore";
 
 const HomePage = () => {
   const { user, checkingAuth } = useUserStore();
   const navigate = useNavigate();
+
+
+
+
 
   useEffect(() => {
     if (!checkingAuth && user?.role === "admin") {

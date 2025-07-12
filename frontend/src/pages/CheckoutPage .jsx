@@ -1,11 +1,23 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import useCartStore from "../store/cartStore";
+import { formatPriceInINR } from "../utils/priceUtils";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { checkOutSchema } from "../Schema/checkoutSchema";
 
 const inputStyle =
   "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 outline-indigo-500";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const { total, subTotal } = useCartStore();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(checkOutSchema) });
+
   const handlePlaceOrder = () => {
     navigate("/order-confirmation");
   };
@@ -29,16 +41,19 @@ const CheckoutPage = () => {
                   type="text"
                   placeholder="First Name"
                   className={inputStyle}
+                  {...register("firstName")}
                 />
                 <input
                   type="text"
                   placeholder="Last Name"
                   className={inputStyle}
+                  {...register("lastName")}
                 />
                 <input
                   type="email"
                   placeholder="Email Address"
                   className={`${inputStyle} sm:col-span-2`}
+                  {...register("email")}
                 />
               </div>
             </div>
@@ -51,17 +66,25 @@ const CheckoutPage = () => {
                   type="text"
                   placeholder="Address Line 1"
                   className={`${inputStyle} sm:col-span-2`}
+                  {...register("addressLine1")}
                 />
-                <input type="text" placeholder="City" className={inputStyle} />
+                <input
+                  type="text"
+                  placeholder="City"
+                  className={inputStyle}
+                  {...register("city")}
+                />
                 <input
                   type="text"
                   placeholder="Postal Code"
                   className={inputStyle}
+                  {...register("postalCode")}
                 />
                 <input
                   type="text"
                   placeholder="Country"
                   className={`${inputStyle} sm:col-span-2`}
+                  {...register("country")}
                 />
               </div>
             </div>
@@ -74,18 +97,26 @@ const CheckoutPage = () => {
                   type="text"
                   placeholder="Cardholder Name"
                   className={`${inputStyle} sm:col-span-2`}
+                  {...register("cardholderName")}
                 />
                 <input
                   type="text"
                   placeholder="Card Number"
                   className={`${inputStyle} sm:col-span-2`}
+                  {...register("cardNumber")}
                 />
                 <input
                   type="text"
                   placeholder="Expiry (MM/YY)"
                   className={inputStyle}
+                  {...register("expiry")}
                 />
-                <input type="text" placeholder="CVV" className={inputStyle} />
+                <input
+                  type="text"
+                  placeholder="CVV"
+                  className={inputStyle}
+                  {...register("cvv ")}
+                />
               </div>
             </div>
           </div>
@@ -96,19 +127,19 @@ const CheckoutPage = () => {
             <div className="text-sm sm:text-base space-y-2 text-gray-700">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>$90.00</span>
+                <span>{formatPriceInINR(subTotal)}</span>
               </div>
-              <div className="flex justify-between">
+              {/* <div className="flex justify-between">
                 <span>Shipping</span>
-                <span>$5.00</span>
-              </div>
-              <div className="flex justify-between">
+                <span>{formatPriceInINR(total)}</span>
+              </div> */}
+              {/* <div className="flex justify-between">
                 <span>Discount</span>
                 <span>- $10.00</span>
-              </div>
+              </div> */}
               <div className="border-t pt-2 font-bold flex justify-between text-lg">
                 <span>Total</span>
-                <span>$85.00</span>
+                <span>{formatPriceInINR(total)}</span>
               </div>
             </div>
 

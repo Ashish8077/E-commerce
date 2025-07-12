@@ -23,8 +23,8 @@ const AdminPanel = () => {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <div className="flex flex-col flex-1">
-        <main className="p-4 overflow-auto">{renderTab()}</main>
+      <div className="flex flex-col w-full border">
+        <main className="p-4 ">{renderTab()}</main>
       </div>
     </div>
   );
