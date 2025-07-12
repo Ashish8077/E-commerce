@@ -94,19 +94,24 @@ const Navbar = () => {
               {openMenu && <BookUser />}
               Contact
             </Link>
-            <Link to={"/login"}>
-              <button
-                className="hover:text-indigo-600 lg:hover:text-indigo-100 transition text-lg lg:hidden flex gap-2   items-center"
-                onClick={() => setOpenMenu(false)}>
-                {openMenu && <KeyRound />}
-                Login
-              </button>
-            </Link>
-            <Link
-              to="/signup"
-              className="hover:text-indigo-600 lg:hover:text-indigo-100 transition text-lg lg:hidden flex gap-2   items-center">
-              {openMenu && <BookCheck />} Signup
-            </Link>
+            {!customer && (
+              <Link to={"/login"}>
+                <button
+                  className="hover:text-indigo-600 lg:hover:text-indigo-100 transition text-lg lg:hidden flex gap-2   items-center "
+                  onClick={() => setOpenMenu(false)}>
+                  {openMenu && <KeyRound />}
+                  Login
+                </button>
+              </Link>
+            )}
+
+            {!customer && (
+              <Link
+                to="/signup"
+                className="hover:text-indigo-600 lg:hover:text-indigo-100 transition text-lg lg:hidden flex gap-2   items-center">
+                {openMenu && <BookCheck />} Signup
+              </Link>
+            )}
 
             {customer && (
               <Link
