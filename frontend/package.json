@@ -17,6 +17,7 @@
     "browser-image-compression": "^2.0.2",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.511.0",
+    "new-folder": "file:..",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.56.4",
