@@ -4,7 +4,6 @@ import useUserStore from "../store/authStore";
 
 const UserProfilePage = () => {
   const { user } = useUserStore();
-  console.log(user);
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-12">
       <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden">

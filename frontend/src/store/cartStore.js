@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { handleApiError } from "../utils/handleApiError";
-import axios from "../../lib/axios";
+import axios from "../lib/axios";
 import { debounceUpdateQuantity } from "../utils/debounceApi";
 
 const useCartStore = create((set, get) => ({

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axios from "../../lib/axios";
+import axios from "../lib/axios";
 import { handleApiError } from "../utils/handleApiError";
 
 const useProductStore = create((set) => ({

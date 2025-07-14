@@ -28,6 +28,6 @@ export const logoutUser = async (refreshToken) => {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     await redis.del(`storeRefreshToken:${decoded.userId}`);
   } catch (error) {
-    console.log(`Logout token decode failed: ${error.message}`);
+    console.error(`Logout token decode failed: ${error.message}`);
   }
 };

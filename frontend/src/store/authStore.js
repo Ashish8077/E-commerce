@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axios from "../../lib/axios";
+import axios from "../lib/axios";
 import { handleApiError } from "../utils/handleApiError";
 
 const useUserStore = create((set, get) => ({
@@ -44,7 +44,6 @@ const useUserStore = create((set, get) => ({
         authError: isAuthenticationError ? message : null,
         generalError: !isAuthenticationError ? message : null,
       });
-      console.log(authError);
       return { success: false, error: message };
     }
   },
@@ -66,27 +65,21 @@ const useUserStore = create((set, get) => ({
     set({ checkingAuth: true, generalError: null });
     try {
       const res = await axios.get("/auth/profile");
-
       set({ user: res.data.data, checkingAuth: false });
-      // return { success: true, data: res.data.data, checkingAuth: false };
     } catch (error) {
       const message = handleApiError(error);
       set({ checkingAuth: false, user: null, generalError: message });
-
-      // return { success: false, error: message };
     }
   },
   refreshToken: async () => {
-    if (get().checkingAuth) return;
-    set({ checkingAuth: true });
+    // if (get().checkingAuth) return;
+    set({ checkingAuth: false });
     try {
+      // set({ checkingAuth: true });
       const response = await axios.post("/auth/refresh-token");
-      console.log(response);
-      get().checkAuth();
-      set({ checkingAuth: false });
       return response.data;
     } catch (error) {
-      set({ user: null, checkingAuth: false });
+      set({ user: null });
       throw error;
     }
   },
@@ -96,9 +89,7 @@ let refreshPromise = null;
 
 axios.interceptors.response.use(
   // If the response is successful (no error), just return it unchanged.
-  (response) => {
-    return response;
-  },
+  (response) => response,
   // This is called if the response has an error, like a 401 unauthorized error.
   async (error) => {
     const originalRequest = error.config;
@@ -112,16 +103,15 @@ axios.interceptors.response.use(
       try {
         if (refreshPromise) {
           await refreshPromise;
-        } else {
-          refreshPromise = useUserStore.getState().refreshToken();
-          await refreshPromise;
+          return axios(originalRequest);
         }
+
+        refreshPromise = useUserStore.getState().refreshToken();
+        await refreshPromise;
         return axios(originalRequest);
       } catch (refreshError) {
         useUserStore.getState().logout();
         return Promise.reject(refreshError);
-      } finally {
-        refreshPromise = null;
       }
     }
     return Promise.reject(error);

@@ -8,6 +8,7 @@ import authRoutes from "./routes/auth.route.js";
 import productRoutes from "./routes/product.route.js";
 import cartRoutes from "./routes/cart.route.js";
 import couponRoutes from "./routes/coupon.route.js";
+import paymentRoutes from "./routes/payment.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -32,8 +33,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/coupons", couponRoutes);
-
-console.log(path.resolve(__dirname, "frontend", "dist", "index.html"));
+app.use("/api/payment", paymentRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "frontend", "dist")));
@@ -46,3 +46,4 @@ app.listen(PORT, () => {
   console.log(`Server is started at http://localhost:${PORT}`);
   connectDB();
 });
+

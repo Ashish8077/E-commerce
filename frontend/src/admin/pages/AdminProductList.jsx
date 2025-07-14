@@ -2,7 +2,7 @@ import { Edit, Star, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import useProductStore from "../../store/productStore";
 import { handleApiError } from "../../utils/handleApiError";
-import axios from "../../../lib/axios";
+import axios from "../../lib/axios";
 import { LoadingSpinner } from "../../components";
 import { EmptyProductState, DeletePopup } from "../components";
 import truncateWords from "../../utils/stringUtils";
@@ -30,8 +30,6 @@ const AdminProductList = () => {
   useEffect(() => {
     fetchAllProducts();
   }, [refresh]);
-
-  console.log(refresh);
 
   if (loading) return <LoadingSpinner />;
 

@@ -37,8 +37,6 @@ const Navbar = () => {
           el.scrollIntoView({ behavior: "smooth" });
         }
       }
-    } else {
-      console.log(location.hash);
     }
     setOpenMenu(false);
   };
